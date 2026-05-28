@@ -32,7 +32,7 @@ public class TodoMVCTest {
         input.sendKeys("Buy milk");
         input.sendKeys(Keys.ENTER);
 
-        WebElement todoItem = driver.findElement(By.cssSelector(".todo-list li"));
+        WebElement todoItem = driver.findElement(By.xpath("//label[text()='Buy milk']"));
         Assertions.assertEquals("Buy milk", todoItem.getText());
     }
 
@@ -67,6 +67,52 @@ public class TodoMVCTest {
 
         WebElement count = driver.findElement(By.cssSelector(".todo-count"));
         Assertions.assertEquals(String.format("%d items left!", totalItems), count.getText());
+    }
+
+    @Test
+    public void cannotAddAnEmptyTodoItem() {
+        List<WebElement> itemsBefore = driver.findElements(By.cssSelector(".todo-list li"));
+        int countBefore = itemsBefore.size();
+
+        WebElement input = driver.findElement(By.id("todo-input"));
+        input.sendKeys(Keys.ENTER);
+
+        List<WebElement> itemsAfter = driver.findElements(By.cssSelector(".todo-list li"));
+        Assertions.assertEquals(countBefore, itemsAfter.size());
+    }
+
+    @Test
+    public void canEditATodoItem() {
+        WebElement input = driver.findElement(By.id("todo-input"));
+        input.sendKeys("Buy chocolate");
+        input.sendKeys(Keys.ENTER);
+
+
+        WebElement todoItem = driver.findElement(By.xpath("//label[text()='Buy chocolate']"));
+        new Actions(driver).doubleClick(todoItem).perform();
+
+
+        WebElement editField = driver.findElement(By.cssSelector("[data-testid='text-input']"));
+        editField.clear();
+        editField.sendKeys("Buy Galaxy chocolate");
+        editField.sendKeys(Keys.ENTER);
+
+
+        WebElement updatedItem = driver.findElement(By.xpath("//label[text()='Buy Galaxy chocolate']"));
+        Assertions.assertEquals("Buy Galaxy chocolate", updatedItem.getText());
+    }
+
+    @Test
+    public void canMarkATodoItemAsComplete() {
+        WebElement input = driver.findElement(By.id("todo-input"));
+        input.sendKeys("Clean the litter boxes");
+        input.sendKeys(Keys.ENTER);
+
+        WebElement todoItem = driver.findElement(By.xpath("//label[text()='Clean the litter boxes']/.."));
+        WebElement checkbox = todoItem.findElement(By.cssSelector("[data-testid='todo-item-toggle']"));
+        checkbox.click();
+
+        Assertions.assertTrue(checkbox.isSelected());
     }
 
     @AfterAll
