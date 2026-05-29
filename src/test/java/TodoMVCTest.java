@@ -38,8 +38,8 @@ public class TodoMVCTest {
 
     @Test
     public void canDeleteATodoItem() {
-        List<WebElement> itemsBefore = driver.findElements(By.cssSelector(".todo-list li"));
-        int countBefore = itemsBefore.size();
+        TodoMVCPage page = new TodoMVCPage(driver);
+        int countBefore = page.getTodoItemCount();
 
         WebElement input = driver.findElement(By.id("todo-input"));
         input.sendKeys("Feed the cats");
@@ -50,20 +50,20 @@ public class TodoMVCTest {
         WebElement deleteButton = driver.findElement(By.cssSelector("[data-testid='todo-item-button']"));
         deleteButton.click();
 
-        List<WebElement> itemsAfter = driver.findElements(By.cssSelector(".todo-list li"));
-        Assertions.assertEquals(countBefore, itemsAfter.size());
+        Assertions.assertEquals(countBefore, page.getTodoItemCount());
     }
 
     @Test
     public void countDisplaysCorrectNumberOfItemsRemaining() {
+        TodoMVCPage page = new TodoMVCPage(driver);
+
         WebElement input = driver.findElement(By.id("todo-input"));
         input.sendKeys("Buy antihistamines");
         input.sendKeys(Keys.ENTER);
         input.sendKeys("Walk the dog");
         input.sendKeys(Keys.ENTER);
 
-        List<WebElement> items = driver.findElements(By.cssSelector(".todo-list li"));
-        int totalItems = items.size();
+        int totalItems = page.getTodoItemCount();
 
         WebElement count = driver.findElement(By.cssSelector(".todo-count"));
         Assertions.assertEquals(String.format("%d items left!", totalItems), count.getText());
@@ -71,14 +71,13 @@ public class TodoMVCTest {
 
     @Test
     public void cannotAddAnEmptyTodoItem() {
-        List<WebElement> itemsBefore = driver.findElements(By.cssSelector(".todo-list li"));
-        int countBefore = itemsBefore.size();
+        TodoMVCPage page = new TodoMVCPage(driver);
+        int countBefore = page.getTodoItemCount();
 
         WebElement input = driver.findElement(By.id("todo-input"));
         input.sendKeys(Keys.ENTER);
 
-        List<WebElement> itemsAfter = driver.findElements(By.cssSelector(".todo-list li"));
-        Assertions.assertEquals(countBefore, itemsAfter.size());
+        Assertions.assertEquals(countBefore, page.getTodoItemCount());
     }
 
     @Test
