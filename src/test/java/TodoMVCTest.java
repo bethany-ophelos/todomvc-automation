@@ -115,6 +115,20 @@ public class TodoMVCTest {
         Assertions.assertTrue(checkbox.isSelected());
     }
 
+    @Test
+    public void canMarkATodoItemAsIncomplete() {
+        WebElement input = driver.findElement(By.id("todo-input"));
+        input.sendKeys("Do the laundry");
+        input.sendKeys(Keys.ENTER);
+
+        WebElement todoItem = driver.findElement(By.xpath("//label[text()='Do the laundry']/.."));
+        WebElement checkbox = todoItem.findElement(By.cssSelector("[data-testid='todo-item-toggle']"));
+        checkbox.click();
+        checkbox.click();
+
+        Assertions.assertFalse(checkbox.isSelected());
+    }
+
     @AfterAll
     public static void tearDown() {
         driver.quit();
